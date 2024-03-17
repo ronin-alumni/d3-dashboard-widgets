@@ -39,7 +39,7 @@ const zone1: D3ZonePainter = {
     return true
   },
   getHeight: function () {
-    return (barHeight + barGap) * this.data.length - barGap // Remove gap from last bar, for true height
+    return (barHeight + barGap) * this.data.length - barGap + 1 // Remove gap from last bar, plus border width, for true height
   },
   paintData: async function (container, x) {
     container
@@ -63,6 +63,8 @@ const zone1: D3ZonePainter = {
 
 // Draw dot-style markers, only taking up one row of space
 const dotRadius = 10
+const noon = new Date()
+noon.setHours(12, 0, 0)
 const zone2: D3ZonePainter = {
   data: [],
   title: 'Dots',
@@ -70,25 +72,30 @@ const zone2: D3ZonePainter = {
     // In a real scenario, this would likely be an API call. Using static fixture here as an example
     this.data = [
       {
-        date: daysShift(now, -20),
+        date: daysShift(noon, -20),
         label: 'A',
       },
       {
-        date: daysShift(now, -19),
+        date: daysShift(noon, -19),
         label: 'A',
       },
       {
-        date: daysShift(now, -12),
+        date: daysShift(noon, -12),
         label: 'B',
       },
       {
-        date: daysShift(now, -4),
+        date: daysShift(noon, -4),
         label: 'C',
       },
       {
-        date: daysShift(now, 2),
+        date: daysShift(noon, 2),
         label: 'A',
         style: 'fill: #AAF',
+      },
+      {
+        date: daysShift(noon, 4),
+        label: 'C',
+        style: 'fill: #AFA',
       },
     ]
     return true

@@ -65,6 +65,19 @@ export default function GantTimeline({ zones }: { zones: D3ZonePainter[] }) {
     // Paint initial inteface elements
     const dayTicks = initialX.ticks(d3.timeDay)
     const dayWidth = initialX(dayTicks[1]) - initialX(dayTicks[0])
+
+    // Highlight today's column
+    const today = new Date()
+    today.setHours(0, 0, 0)
+    svg
+      .select('#grid')
+      .append('rect')
+      .attr('id', 'today')
+      .attr('style', 'fill: #FFF; fill-opacity: 0.2')
+      .attr('x', initialX(today))
+      .attr('width', dayWidth)
+      .attr('height', chartConfig.height)
+
     // Paint lines between each day
     svg
       .select('#grid')
@@ -145,9 +158,10 @@ export default function GantTimeline({ zones }: { zones: D3ZonePainter[] }) {
               heights[i - 1] +
               chartConfig.padding.zone +
               chartConfig.margin.zone
-        const verticalOffset = i == 0 ? 0 : cumulativeOffset[i - 1] + priorZoneHeight
+        const verticalOffset =
+          i == 0 ? chartConfig.margin.headerDays + 10 : cumulativeOffset[i - 1] + priorZoneHeight
         cumulativeOffset[i] = verticalOffset
-        c.attr('transform', `translate(0,${verticalOffset + chartConfig.margin.headerDays + 10})`)
+        c.attr('transform', `translate(0,${verticalOffset})`)
 
         // Draw boundary around the zone
         c.append('rect')
@@ -165,18 +179,31 @@ export default function GantTimeline({ zones }: { zones: D3ZonePainter[] }) {
           .attr('y', 0)
           .attr('width', chartConfig.width - chartConfig.margin.zone * 2)
           .attr('height', zoneHeaderHeight)
-          .attr('style', 'fill: #000; fill-opacity: 0.1')
+          .attr('style', 'fill: #9c9c7f; fill-opacity: 0.8')
         c.append('text')
           .attr('class', styles.headerZone)
           .attr('x', chartConfig.padding.zone)
           .attr('y', zoneHeaderHeight - 7)
           .text(z.title)
 
+        c.append('clipPath')
+          .attr('id', `clip-zone-${i}`)
+          .attr('clipPathUnits', 'userSpaceOnUse')
+          .append('rect')
+          .attr('x', chartConfig.margin.zone + chartConfig.padding.zone)
+          .attr('y', 0)
+          .attr('height', heights[i])
+          .attr(
+            'width',
+            chartConfig.width - chartConfig.margin.zone * 2 - chartConfig.padding.zone * 2,
+          )
+
         // Container for actual data needs to have a translate X component of zero, so that the Scale has a proper result
         return z.paintData(
           c
             .append('g')
             .attr('class', 'data')
+            .attr('clip-path', `url(#clip-zone-${i})`)
             .attr('transform', `translate(0, ${zoneHeaderHeight + chartConfig.padding.zone})`),
           initialX,
         )
