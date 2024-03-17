@@ -1,0 +1,17 @@
+.headerDays {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 12px;
+}
+.headerMonths {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 16px;
+}
+
+.zoneBg {
+  stroke: #880; stroke-width: 1px; fill: #000; fill-opacity: 0.1
+}
+.headerZone {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+}
